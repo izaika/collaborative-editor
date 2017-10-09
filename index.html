@@ -33,13 +33,28 @@
 <body>
 <div id="editor-wrapper">
     <span class="cuser">Current User: </span><span id="username"></span><br>
-    <textarea id="editor"></textarea>
+    <div id="editor" class="fr-view"></div>
 </div>
-<script src="/bower_components/codemirror/lib/codemirror.js"></script>
-<link rel="stylesheet" href="/bower_components/codemirror/lib/codemirror.css">
-<script src="/bower_components/codemirror/mode/javascript/javascript.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet"
+      type="text/css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/codemirror.min.css">
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/froala-editor/2.7.0/css/froala_editor.pkgd.min.css" rel="stylesheet"
+      type="text/css"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/froala-editor/2.7.0/css/froala_style.min.css" rel="stylesheet"
+      type="text/css"/>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/codemirror.min.js"></script>
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/mode/xml/xml.min.js"></script>
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/froala-editor/2.7.0/js/froala_editor.pkgd.min.js"></script>
+
 <script src="/socket.io/socket.io.js"></script>
-<script src="/bower_components/jquery/dist/jquery.min.js"></script>
 <script>
   function getParameterByName(name, url) {
     if (!url) url = window.location.href;
@@ -53,26 +68,32 @@
   var room = getParameterByName('room');
   var user = getParameterByName('user');
   document.getElementById("username").innerHTML = user;
-  var myCodeMirror = CodeMirror.fromTextArea(document.getElementById("editor"), {
-    lineNumbers: true,
-    mode: "javascript"
-  });
+
+  var $editor = $('#editor');
+
+  $editor.froalaEditor({toolbarButtons: ['bold', 'italic', 'underline', '|', 'insertLink', '|', 'formatOL', 'formatUL', '|', 'quote', '|', 'clearFormatting']});
+
   var socket = io();
+
   $.ajax({
     url: '/getData/' + room, success: function (result, status, xhr) {
-      myCodeMirror.setValue(result.value);
+      $editor.froalaEditor('html.set', result.value);
       console.log(result);
     }
   });
-  myCodeMirror.on('keyup', function () {
-    var msg = {id: room, user: user, value: myCodeMirror.getValue()}
+
+  $editor.on('froalaEditor.contentChanged', function (e, editor) {
+    var msg = {id: room, user: user, value: $editor.froalaEditor('html.get', true)}
     socket.emit('document-update', msg);
   });
+
   socket.on('doc', function (msg) {
     if (msg.new_val.id === room && msg.new_val.user != user) {
-      var current_pos = myCodeMirror.getCursor();
-      myCodeMirror.getDoc().setValue(msg.new_val.value);
-      myCodeMirror.setCursor(current_pos);
+
+      $editor.froalaEditor('html.set', msg.new_val.value);
+//      var current_pos = myCodeMirror.getCursor();
+//      myCodeMirror.getDoc().setValue(msg.new_val.value);
+//      myCodeMirror.setCursor(current_pos);
     }
   });
 </script>
