@@ -1,0 +1,22 @@
+{
+  "name": "collaborative-editor",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "engines": {
+    "node": "8.6.0",
+    "npm": "5.5.1",
+    "yarn": "1.1.0",
+    "bower": "1.8.2"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.1",
+    "rethinkdb": "^2.3.3",
+    "socket.io": "^2.0.3"
+  }
+}
