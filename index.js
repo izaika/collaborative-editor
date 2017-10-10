@@ -5,10 +5,10 @@ const app = require('express')();
 
 
 const options = {
-  // key: fs.readFileSync('/etc/letsencrypt/live/gdev.pp.ua/privkey.pem'),
-  // cert: fs.readFileSync('/etc/letsencrypt/live/gdev.pp.ua/cert.pem')
-  key  : fs.readFileSync('/etc/ssl/private/selfsigned.key'),
-  cert : fs.readFileSync('/etc/ssl/certs/selfsigned.crt')
+  key: fs.readFileSync('/etc/letsencrypt/live/gdev.pp.ua/privkey.pem'),
+  cert: fs.readFileSync('/etc/letsencrypt/live/gdev.pp.ua/cert.pem')
+  // key  : fs.readFileSync('/etc/ssl/private/selfsigned.key'),
+  // cert : fs.readFileSync('/etc/ssl/certs/selfsigned.crt')
 };
 
 const https = require('https').createServer(options, app);
