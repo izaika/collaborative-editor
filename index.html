@@ -39,12 +39,33 @@
         #insertFile-1 {
             display: none !important;
         }
+        .export-btn {
+            display: block;
+            width: 180px;
+            height: 42px;
+            line-height: 42px;
+            border-radius: 3px;
+            background-color: #ffffff;
+            border: solid 2px #ff9000;
+            padding: 0;
+        }
+        .btn-text {
+            display: block;
+            font-family: Arial;
+            font-size: 13px;
+            font-weight: bold;
+            text-align: left;
+            color: #444444;
+            margin-left: 50px;
+        }
     </style>
 </head>
 <body>
 <div id="editor-wrapper">
+    <button class="export-btn">
+        <span class="btn-text">Export to PDFfiller</span>
+    </button>
     <div id="editor" class="fr-view"></div>
-    <button></button>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 

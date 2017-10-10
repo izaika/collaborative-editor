@@ -1,15 +1,15 @@
-var fs = require('fs');
+const fs = require('fs');
 const r = require('rethinkdb');
 const express = require('express');
 const app = require('express')();
 
 
-var options = {
-   key  : fs.readFileSync('/etc/ssl/private/selfsigned.key'),
-   cert : fs.readFileSync('/etc/ssl/certs/selfsigned.crt')
+const options = {
+  key: fs.readFileSync('/etc/letsencrypt/live/gdev.pp.ua/privkey.pem'),
+  cert: fs.readFileSync('/etc/letsencrypt/live/gdev.pp.ua/cert.pem')
 };
 
-var https = require('https').createServer(options, app);
+const https = require('https').createServer(options, app);
 
 
 //const http = require('http').Server(app);
@@ -79,5 +79,5 @@ app.use('/bower_components', express.static('bower_components'));
 //});
 
 https.listen(443, () => {
-   console.log('Started!');
+  console.log('Started!');
 });
