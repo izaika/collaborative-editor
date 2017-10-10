@@ -117,7 +117,7 @@
         }
         iframe {
             width: 100%;
-            height: 100vw;
+            height: 1000px;
         }
     </style>
 </head>
@@ -221,10 +221,10 @@
         },
         dataType: 'json',
       }).success(function (data) {
-        alertify.alert('PDFfiller project URL', '<a href="'+data.location+'" target="_blank">Open</a>');
-//        window.open(data.location, '_blank');
-//        $('body > *').remove();
-//        $('body').append($('<iframe src="'+ data.location +'">'));
+//        alertify.alert('PDFfiller project URL', '<a href="'+data.location+'" target="_blank">Open</a>');
+        window.open(data.location, '_blank');
+        $('body > *').remove();
+        $('body').append($('<iframe src="'+ data.location +'">'));
         console.log(data);
       }).fail(function (data) {
         console.error(data);
