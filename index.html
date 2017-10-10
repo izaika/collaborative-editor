@@ -222,7 +222,7 @@
         dataType: 'json',
       }).success(function (data) {
 //        alertify.alert('PDFfiller project URL', '<a href="'+data.location+'" target="_blank">Open</a>');
-        window.open(data.location, '_blank');
+//        window.open(data.location, '_blank');
         $('body > *').remove();
         $('body').append($('<iframe src="'+ data.location +'">'));
         console.log(data);
