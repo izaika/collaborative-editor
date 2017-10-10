@@ -1,8 +1,19 @@
+var fs = require('fs');
 const r = require('rethinkdb');
 const express = require('express');
 const app = require('express')();
-const http = require('http').Server(app);
-const io = require('socket.io')(http);
+
+
+var options = {
+   key  : fs.readFileSync('/etc/ssl/private/selfsigned.key'),
+   cert : fs.readFileSync('/etc/ssl/certs/selfsigned.crt')
+};
+
+var https = require('https').createServer(options, app);
+
+
+//const http = require('http').Server(app);
+const io = require('socket.io')(https);
 
 r.connect({host: 'localhost', port: 28015}, (err, conn) => {
   if (err) throw err;
@@ -63,6 +74,10 @@ app.get('/', (req, res) => {
 app.use('/bower_components', express.static('bower_components'));
 
 // Setup Express Listener
-http.listen(8080, '0.0.0.0', () => {
-  console.log('listening on: 0.0.0.0:8080');
+//http.listen(8080, '0.0.0.0', () => {
+//  console.log('listening on: 0.0.0.0:8080');
+//});
+
+https.listen(443, () => {
+   console.log('Started!');
 });

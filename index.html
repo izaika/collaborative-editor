@@ -3,40 +3,48 @@
 <head>
     <title>Collaborative Editor</title>
     <style>
+
+	    html {
+            overflow-x: hidden;
+        }
+
         html, body {
             height: 100%;
             width: 100%;
-            background-color: #333;
-            font-family: arial;
+            background-color: #e5e6e8;
+            font-family: Arial;
+            margin: 0;
         }
 
         #editor-wrapper {
-            width: 70%;
-            margin-left: auto;
-            margin-right: auto;
-            margin-top: 3em;
+            width: 90%;
+            margin: auto;
         }
-
-        #username {
-            color: #f3f3f3;
-        }
-
-        .cuser {
-            color: #999;
-        }
-
-        .ouser {
-            color: #fff;
+        #editor-wrapper:before,
+        #editor-wrapper:after {
+            content: '';
+            display: block;
+            height: 40px;
         }
         a[href^="https://www.froala.com/wysiwyg-editor"] {
+            /*display: none !important;*/
+            visibility: hidden;
+        }
+        .fr-hidden {
+            display: block !important;
+        }
+        #print-1,
+        #insertImage-1,
+        #insertVideo-1,
+        #insertFile-1 {
             display: none !important;
         }
     </style>
 </head>
 <body>
 <div id="editor-wrapper">
-    <span class="cuser">Current User: </span><span id="username"></span><br>
     <div id="editor" class="fr-view"></div>
+    <button></button>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
@@ -70,11 +78,10 @@
 
   var room = getParameterByName('room');
   var user = getParameterByName('user');
-  document.getElementById("username").innerHTML = user;
 
   var $editor = $('#editor');
 
-  $editor.froalaEditor({toolbarButtons: ['bold', 'italic', 'underline', '|', 'insertLink', '|', 'formatOL', 'formatUL', '|', 'quote', '|', 'clearFormatting']});
+  $editor.froalaEditor({heightMin: 400});
 
   var socket = io();
 
