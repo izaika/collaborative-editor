@@ -3,8 +3,15 @@
 <head>
     <title>Collaborative Editor</title>
     <style>
-
-	    html {
+        @keyframes rotating {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        html {
             overflow-x: hidden;
         }
 
@@ -20,25 +27,30 @@
             width: 90%;
             margin: auto;
         }
+
         #editor-wrapper:before,
         #editor-wrapper:after {
             content: '';
             display: block;
             height: 40px;
         }
+
         a[href^="https://www.froala.com/wysiwyg-editor"] {
             /*display: none !important;*/
             visibility: hidden;
         }
+
         .fr-hidden {
             display: block !important;
         }
+
         #print-1,
         #insertImage-1,
         #insertVideo-1,
         #insertFile-1 {
             display: none !important;
         }
+
         .export-btn {
             display: block;
             width: 180px;
@@ -48,7 +60,16 @@
             background-color: #ffffff;
             border: solid 2px #ff9000;
             padding: 0;
+            position: relative;
+            transition: background-color .2s ease-out;
+            cursor: pointer;
+            outline: none;
         }
+
+        .export-btn:hover {
+            background-color: #fffbf7;
+        }
+
         .btn-text {
             display: block;
             font-family: Arial;
@@ -58,11 +79,59 @@
             color: #444444;
             margin-left: 50px;
         }
+
+        .logo {
+            width: 28px;
+            height: 18px;
+            display: block;
+            position: absolute;
+            top: 11px;
+            left: 14px;
+            transition: opacity .2s ease-out;
+        }
+
+        .loader {
+            display: block;
+            width: 20px;
+            height: 20px;
+            position: absolute;
+            top: 50%;
+            margin-top: -10px;
+            left: 18px;
+            border-radius: 50%;
+            border: solid 2px #ff9000;
+            border-bottom-color: #ddd;
+            box-sizing: border-box;
+            transition: opacity .2s ease-out;
+            opacity: 0;
+            animation: rotating 2s linear infinite;
+        }
+        .export-btn.loading {
+            cursor: default;
+        }
+        .export-btn.loading .logo {
+            opacity: 0;
+        }
+        .export-btn.loading .loader {
+            opacity: 1;
+        }
+        iframe {
+            width: 100%;
+            height: 100vw;
+        }
     </style>
 </head>
 <body>
 <div id="editor-wrapper">
     <button class="export-btn">
+        <svg class="logo" xmlns="http://www.w3.org/2000/svg" width="28" height="20" viewBox="0 0 28 20">
+            <g fill="none" fill-rule="evenodd">
+                <path fill="#CF4436" d="M23.288.087L11.49 19.995h8.636l7.478-12.62L23.288.086"/>
+                <path fill="#E95E50" d="M15.39 12.051L13.641 8.89H5.007l6.083 10.418 4.3-7.256"/>
+                <path fill="#666" d="M22.479.087H.074l4.305 7.287h13.782L22.479.087"/>
+            </g>
+        </svg>
+        <span class="loader"></span>
         <span class="btn-text">Export to PDFfiller</span>
     </button>
     <div id="editor" class="fr-view"></div>
@@ -78,6 +147,9 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/froala-editor/2.7.0/css/froala_style.min.css" rel="stylesheet"
       type="text/css"/>
 
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.11.0/build/css/alertify.min.css"/>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.11.0/build/css/themes/default.min.css"/>
+
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <script type="text/javascript"
         src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/codemirror.min.js"></script>
@@ -85,6 +157,9 @@
         src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/mode/xml/xml.min.js"></script>
 <script type="text/javascript"
         src="https://cdnjs.cloudflare.com/ajax/libs/froala-editor/2.7.0/js/froala_editor.pkgd.min.js"></script>
+
+<script src="//cdn.jsdelivr.net/npm/alertifyjs@1.11.0/build/alertify.min.js"></script>
+
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
@@ -125,6 +200,37 @@
 //      var current_pos = myCodeMirror.getCursor();
 //      myCodeMirror.getDoc().setValue(msg.new_val.value);
 //      myCodeMirror.setCursor(current_pos);
+    }
+  });
+
+  $('.export-btn').on('click', function (e) {
+    e.preventDefault();
+    var t = $(e.currentTarget);
+    if (!t.hasClass('loading')) {
+      t.addClass('loading');
+
+      $.ajax({
+        url: 'https://cors-anywhere.herokuapp.com/https://apidev7.pdffiller.com/v1/quip/to_pdf',
+//        url: 'https://apidev7.pdffiller.com/v1/quip/to_pdf',
+        data: {
+          html: $editor.froalaEditor('html.get', true)
+        },
+        type: 'post',
+        headers: {
+          Authorization: 'Bearer TN6GFHMC39R6o7AGLSguXy27QOYybfS1XyEyfYpE',
+        },
+        dataType: 'json',
+      }).success(function (data) {
+        alertify.alert('PDFfiller project URL', '<a href="'+data.location+'" target="_blank">Open</a>');
+//        window.open(data.location, '_blank');
+//        $('body > *').remove();
+//        $('body').append($('<iframe src="'+ data.location +'">'));
+        console.log(data);
+      }).fail(function (data) {
+        console.error(data);
+      }).always(function () {
+        t.removeClass('loading');
+      });
     }
   });
 </script>
