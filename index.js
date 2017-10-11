@@ -74,7 +74,11 @@ r.connect({host: 'localhost', port: 28015}, (err, conn) => {
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
-app.use('/fontAwesome', express.static('fontAwesome'));
+app.use('/fontAwesome', express.static('fontAwesome', {
+  setHeaders: (res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*')
+  }
+}));
 
 // Setup Express Listener
 //http.listen(8080, '0.0.0.0', () => {
