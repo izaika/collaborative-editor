@@ -74,6 +74,7 @@ r.connect({host: 'localhost', port: 28015}, (err, conn) => {
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
+app.use('/fontAwesome', express.static('fontAwesome'));
 
 // Setup Express Listener
 //http.listen(8080, '0.0.0.0', () => {
