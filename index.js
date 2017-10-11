@@ -61,6 +61,7 @@ r.connect({host: 'localhost', port: 28015}, (err, conn) => {
   app.get('/getData/:id', (req, res, next) => {
     r.table('edit').get(req.params.id).run(conn, (err, result) => {
       if (err) throw err;
+      res.header('Access-Control-Allow-Origin', '*');
       res.send(result);
       // return next(result);
     });
@@ -73,7 +74,6 @@ r.connect({host: 'localhost', port: 28015}, (err, conn) => {
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
-app.use('/bower_components', express.static('bower_components'));
 
 // Setup Express Listener
 //http.listen(8080, '0.0.0.0', () => {
